@@ -1,0 +1,37 @@
+
+#ADLS PARAMETERS
+dbutils.widgets.text("AzureDataLakeAccount", "", "AzureDataLakeAccount")
+dbutils.widgets.text("AzureDataLakesource", "", "AzureDataLakesource")
+#ADLS ZONE FOR DELTA LAKE
+dbutils.widgets.text("ZoneBronze", "", "ZoneBronze")
+dbutils.widgets.text("ZoneSilver", "", "ZoneSilver")
+#DATABASE PARAMETERS
+dbutils.widgets.text("BronzeDB", "", "BronzeDB")
+dbutils.widgets.text("SilverDB", "", "SilverDB")
+#TABLE PARAMETERS
+dbutils.widgets.text("ObjectName", "", "ObjectName")
+dbutils.widgets.text("PrimaryKey", "", "PrimaryKey")
+#CONFIGURATION DATA LOAD PARAMETERS
+dbutils.widgets.text("ExtractionType", "", "ExtractionType")
+dbutils.widgets.text("LastLoadedDate", "", "LastLoadedDate")
+
+Oauth 2 credential
+authenticationKey = dbutils.secrets.get(scope="ADLSKeyVault",key="ClientSecret")
+tenandId = dbutils.secrets.get(scope="ADLSKeyVault",key="TenantId")
+applicationId= dbutils.secrets.get(scope="ADLSKeyVault",key="ClientId")
+endpoint = "https://login.microsoftonline.com/" + tenandId + "/oauth2/token"
+DateLakeAccountURL= AzureDataLakeAccount+".dfs.core.windows.net"
+DateLakeAccountURL_raw= AzureDataLakesource+".dfs.core.windows.net"
+#Adls config settings
+spark.conf.set("fs.azure.account.auth.type." + DateLakeAccountURL_raw, "OAuth")
+spark.conf.set("fs.azure.account.oauth.provider.type." + DateLakeAccountURL_raw, "org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider")
+spark.conf.set("fs.azure.account.oauth2.client.id." + DateLakeAccountURL_raw, applicationId)
+spark.conf.set("fs.azure.account.oauth2.client.secret." + DateLakeAccountURL_raw,authenticationKey)
+spark.conf.set("fs.azure.account.oauth2.client.endpoint." + DateLakeAccountURL_raw, endpoint)
+#Get source path
+baseUrlAzureDataLakeSource = "abfss://" + ZoneBronze + "@" + AzureDataLakesource + ".dfs.core.windows.net"
+baseUrlAzureDataLakeBronze = "abfss://" + ZoneBronze + "@" + AzureDataLakeAccount + ".dfs.core.windows.net"
+baseUrlAzureDataLakeSilver = "abfss://" + ZoneSilver + "@" + AzureDataLakeAccount + ".dfs.core.windows.net"
+
+
+dbutils.fs.ls('abfss://bronze@az21d1datalakewe.dfs.core.windows.net/im/raw/QDS/ADDRESS/Full/2023/06/20/')
