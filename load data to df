@@ -1,0 +1,8 @@
+InPath = SourceFolder + "/*.parquet"
+df = spark.read.format("parquet").load(InPath)
+df=df.distinct()
+
+
+   df=df.\
+            withColumn("ADLS_LOADED_DATE", lit(date)).\
+            withColumn("LAST_UPDATED_DATE", F.current_timestamp())       
