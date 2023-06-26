@@ -1,6 +1,7 @@
-  df.write.format("delta").mode("append").option("mergeSchema", "true").save(Delta_path+"/im/"+BronzeDB.replace('bronze_','')+"/"+ ObjectName) 
+df.write.format("delta").mode("append").option("mergeSchema", "true").save(Delta_path+"/im/"+BronzeDB.replace('bronze_','')+"/"+ ObjectName) 
 
-
+df=spark.read.format('parquet').option("inferschema","ture" ).load('abfss://bronze@az21d1datalakewe.dfs.core.windows.net/im/raw/QDS/ADDRESS/Full/2023/')
+df.count()
 
 # Create a table in the metastore using DataFrame's schema and write data to it
 df.write.format("delta").saveAsTable("default.people10m")
