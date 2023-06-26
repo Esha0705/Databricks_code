@@ -1,0 +1,9 @@
+  df.write.format("delta").mode("append").option("mergeSchema", "true").save(Delta_path+"/im/"+BronzeDB.replace('bronze_','')+"/"+ ObjectName) 
+
+
+
+# Create a table in the metastore using DataFrame's schema and write data to it
+df.write.format("delta").saveAsTable("default.people10m")
+
+# Create or replace the partitioned table with a path using DataFrame's schema and write/overwrite data to it
+df.write.format("delta").mode("overwrite").save("/tmp/delta/people10m")
